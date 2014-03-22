@@ -1,0 +1,5 @@
+﻿CREATE TABLE [Live].[Region]
+(
+	[Id] BIGINT NOT NULL PRIMARY KEY, 
+    [Name] NVARCHAR(MAX) NOT NULL
+)
