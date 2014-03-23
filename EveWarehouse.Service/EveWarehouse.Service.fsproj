@@ -9,10 +9,11 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>EveWarehouse.Service</RootNamespace>
     <AssemblyName>EveWarehouse.Service</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>EveWarehouse.Service</Name>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,20 +40,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EveAI.Core">
-      <HintPath>..\..\..\..\..\Documents\Visual Studio 2013\Projects\EveWarehouse\libs\EveAI\EveAI.Core.dll</HintPath>
+      <HintPath>..\libs\EveAI\EveAI.Core.dll</HintPath>
     </Reference>
     <Reference Include="EveAI.Live">
-      <HintPath>..\..\..\..\..\Documents\Visual Studio 2013\Projects\EveWarehouse\libs\EveAI\EveAI.Live.dll</HintPath>
+      <HintPath>..\libs\EveAI\EveAI.Live.dll</HintPath>
     </Reference>
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="FSharp.Data">
       <HintPath>..\packages\FSharp.Data.2.0.1\lib\net40\FSharp.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="FSharp.Data.TypeProviders, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
