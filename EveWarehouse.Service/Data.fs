@@ -2,4 +2,7 @@
 
 open Microsoft.FSharp.Data.TypeProviders
 
-type internal EveWarehouse = SqlDataConnection<"Server=kid-pc\SQLEXPRESS;Initial Catalog=EveWarehouse.dev;Integrated Security=SSPI">
+[<Literal>]
+let connectionString = "Server=(local); Initial Catalog=EveWarehouse.Database; Integrated Security=SSPI"
+
+type internal EveWarehouse = SqlDataConnection<ConnectionString=connectionString, ForceUpdate=true>

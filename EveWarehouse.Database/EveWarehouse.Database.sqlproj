@@ -122,6 +122,9 @@
     <Build Include="Live\Tables\Item.sql" />
     <Build Include="Live\Tables\MarketHistoryLine.sql" />
     <Build Include="Live\Tables\Region.sql" />
+    <Build Include="Live\Tables\Corporation.sql" />
+    <Build Include="Live\Tables\Wallet.sql" />
+    <Build Include="Live\Tables\Transaction.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />
