@@ -67,8 +67,9 @@
     <None Include="App.config" />
     <Compile Include="Common.fs" />
     <Compile Include="Data.fs" />
-    <Compile Include="MarketHistory.fs" />
+    <Compile Include="Account.fs" />
     <Compile Include="Transactions.fs" />
+    <Compile Include="MarketHistory.fs" />
     <Compile Include="Program.fs" />
     <None Include="packages.config" />
   </ItemGroup>

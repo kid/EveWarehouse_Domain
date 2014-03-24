@@ -33,10 +33,10 @@ type internal MarketHistoryLines = JsonProvider<marketHistorySample>
 
 let fetchHistoryData itemId regionId =
     let url = sprintf "http://public-crest.eveonline.com/market/%i/types/%i/history/" regionId itemId
-    let wrap (x:string) =
-        MarketHistoryLines.Load x
-
-    tryCatch wrap (fun ex -> ex.Message) url
+    try
+        MarketHistoryLines.Load url |> succeed
+    with
+    | ex -> fail ex.Message
 
 let internal mapHistoryData itemId regionId (data: MarketHistoryLines.Root) =
     let mapLine (line: MarketHistoryLines.Item) =
@@ -75,7 +75,8 @@ let internal saveHistoryData itemId regionId (lines: seq<EveWarehouse.ServiceTyp
         |> Seq.filter (fun l -> lastDate.IsNone || l.Date.Date > lastDate.Value)
         |> Seq.toList
     
-    filtered |> Seq.iter context.Live_MarketHistoryLine.InsertOnSubmit
+    filtered
+    |> context.Live_MarketHistoryLine.InsertAllOnSubmit
 
     succeed (Seq.length filtered)
 

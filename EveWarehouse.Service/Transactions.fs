@@ -15,7 +15,7 @@ let updateTransactions =
             for apiKey in context.Live_ApiKey do
             where (apiKey.KeyType = (int)APIKeyInfo.APIKeyType.Corporation)
             join char in context.Live_Character on (apiKey.Id = char.ApiKeyId)
-            join corp in context.Live_Corporation on (apiKey.Id = corp.ApiKeyId.Value)
+            join corp in context.Live_Corporation on (apiKey.Id = corp.ApiKeyId)
             join wallet in context.Live_Wallet on (corp.Id = wallet.CorporationId.Value)
             select (apiKey.Id, apiKey.Code, char.Id, wallet.Id, wallet.AccountKey)
         }
