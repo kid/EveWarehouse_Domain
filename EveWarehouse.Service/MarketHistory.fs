@@ -78,7 +78,11 @@ let internal saveHistoryData itemId regionId (lines: seq<EveWarehouse.ServiceTyp
     filtered
     |> context.Live_MarketHistoryLine.InsertAllOnSubmit
 
-    succeed (Seq.length filtered)
+    try
+        context.DataContext.SubmitChanges()
+        succeed (Seq.length filtered)
+    with
+    | ex -> fail ex.Message
 
 let updateHistory itemId regionId =
     fetchHistoryData itemId regionId

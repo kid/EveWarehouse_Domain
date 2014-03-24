@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [Live].[Transaction]
 (
-    [Id] BIGINT NOT NULL PRIMARY KEY, 
+    [Id] BIGINT NOT NULL, 
     [WalletId] BIGINT NOT NULL, 
     [ItemId] INT NOT NULL,
     [ItemName] NVARCHAR(MAX) NOT NULL,
@@ -15,4 +15,5 @@
     [StationName] NVARCHAR(MAX) NOT NULL,
     [TransactionFor] INT NOT NULL, 
     [TransactionType] INT NOT NULL
+	PRIMARY KEY CLUSTERED ([WalletId] ASC, [Id] ASC)
 )

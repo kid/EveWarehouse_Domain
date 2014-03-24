@@ -37,10 +37,10 @@ let tee f x =
     x
 
 // convert a one-track function into a switch with exception handling
-let tryCatch f exnHandler x = 
+let tryCatch f x =
     try 
         f x |> succeed
-    with ex -> exnHandler ex |> fail
+    with ex -> ex.Message |> fail
 
 // convert two one-track functions into a two-track function
 let doubleMap successFunc failureFunc = either (successFunc >> succeed) (failureFunc >> fail)
