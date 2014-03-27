@@ -48,6 +48,12 @@ module DomainTypes =
         Quantity: int64
     }
 
+    type ItemQuantityPrice = {
+        ItemId: ItemId
+        Quantity: int64
+        Price: decimal
+    }
+
     type BillOfMaterial = {
         Output: ItemQuantity
         Input: ItemQuantity list
@@ -56,9 +62,4 @@ module DomainTypes =
     type ReactionBatch = {
         ItemId: ItemId
         CycleDuration: TimeSpan
-    }
-
-    let terahertzBom = {
-        Output = { ItemId = ItemId 33360L ; Quantity = 300L }
-        Input = [ { ItemId = ItemId 16657L ; Quantity = 16800L } ; { ItemId = ItemId 16652L ; Quantity = 8400L } ; { ItemId = ItemId 16646L ; Quantity = 8400L } ]
     }

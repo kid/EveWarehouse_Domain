@@ -1,4 +1,6 @@
-﻿with 
+﻿-- declare @ItemId bigint = 16652;
+
+with 
 StockSum as (
 	select [ItemId], sum([Movement]) as [TotalQuantity]
 	from [Live].[InventoryEntries]
