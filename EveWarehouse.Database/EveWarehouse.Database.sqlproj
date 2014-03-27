@@ -126,11 +126,12 @@
     <Build Include="Live\Tables\Corporation.sql" />
     <Build Include="Live\Tables\Wallet.sql" />
     <Build Include="Live\Tables\Transaction.sql" />
-    <Build Include="Live\Tables\InventoryEntry.sql" />
+    <Build Include="Live\Tables\InventoryEntries.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />
     <None Include="Queries\FifoInventory.sql" />
+    <None Include="Queries\CopyTransactionsToInventory.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="EveWarehouse.Database.refactorlog" />

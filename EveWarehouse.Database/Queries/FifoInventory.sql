@@ -34,7 +34,7 @@ FirstOut as (
 			r.[Date],
 			r.[ThisStock] as [StockToUse],
 			e.[Price] as [PriceToUse],
-			r.[RollingStock]
+			r.[RollingStock] as [RollingStock]
 		from ReverseSum r
 		left join [Live].[InventoryEntries] e on e.[Id] = r.[Id]
 		where r.[ItemId] = s.[ItemId]
@@ -45,9 +45,7 @@ FirstOut as (
 select 
 	f.[ItemId],
 	s.[Id] as [StockId],
-	case when s.Id = f.[Id] then f.[Remaining]
-		 else s.[Movement]
-	end as [Remaining],
+	case when s.Id = f.[Id] then isnull(f.[Remaining], cast(0 as bigint)) else s.[Movement] end as [Remaining],
 	s.[Price]
 from [FirstOut] f
 join [Live].[InventoryEntries] s on s.[ItemId] = f.[ItemId] and s.[Date] >= f.[Date] and s.[Movement] > 0
