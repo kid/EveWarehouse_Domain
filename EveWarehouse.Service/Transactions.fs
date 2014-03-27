@@ -12,7 +12,7 @@ open Data
 let saveTransactions walletId accountKey transactions =
     let toEntity (entry:TransactionEntry) =
         new EveWarehouse.ServiceTypes.Live_Transaction(
-            Id = entry.TransactionID,
+            TransactionId = entry.TransactionID,
             Date = entry.Date,
             WalletId = walletId,
             ItemId = entry.TypeID,
@@ -28,7 +28,7 @@ let saveTransactions walletId accountKey transactions =
             TransactionFor = (int)entry.TransactionFor,
             TransactionType = (int)entry.TransactionType
         )
-            
+        
     use context = EveWarehouse.GetDataContext()
     let lastDate =
         let dates = 

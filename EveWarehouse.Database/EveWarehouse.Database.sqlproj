@@ -110,6 +110,7 @@
     <Folder Include="Security\" />
     <Folder Include="Star" />
     <Folder Include="Star\Tables" />
+    <Folder Include="Queries" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Live\Tables\ApiKey.sql">
@@ -125,9 +126,11 @@
     <Build Include="Live\Tables\Corporation.sql" />
     <Build Include="Live\Tables\Wallet.sql" />
     <Build Include="Live\Tables\Transaction.sql" />
+    <Build Include="Live\Tables\InventoryEntry.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />
+    <None Include="Queries\FifoInventory.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="EveWarehouse.Database.refactorlog" />

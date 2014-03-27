@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [Live].[Transaction]
 (
-    [Id] BIGINT NOT NULL, 
-    [WalletId] BIGINT NOT NULL, 
+    [WalletId] BIGINT NOT NULL REFERENCES [Live].[Wallet] ([Id]), 
+    [TransactionId] BIGINT NOT NULL, 
     [ItemId] INT NOT NULL,
     [ItemName] NVARCHAR(MAX) NOT NULL,
     [Date] DATETIME2 NOT NULL, 
@@ -15,5 +15,5 @@
     [StationName] NVARCHAR(MAX) NOT NULL,
     [TransactionFor] INT NOT NULL, 
     [TransactionType] INT NOT NULL
-	PRIMARY KEY CLUSTERED ([WalletId] ASC, [Id] ASC)
+	PRIMARY KEY CLUSTERED ([WalletId] ASC, [TransactionId] ASC)
 )
