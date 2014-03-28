@@ -54,7 +54,12 @@ module DomainTypes =
         Price: decimal
     }
 
-    type BillOfMaterial = {
+    type BillOfMaterialsId = BillOfMaterialsId of int
+
+    type BillOfMaterials = {
+        Id: BillOfMaterialsId option
+        Description: string
+        Duration: TimeSpan
         Output: ItemQuantity
         Input: ItemQuantity list
     }

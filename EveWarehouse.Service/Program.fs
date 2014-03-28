@@ -14,11 +14,14 @@ VALUES (@WalletId, @TransactionId, @Date, @ItemId, @ItemName, @Price, @Quantity,
 """
     
 
-type InsertTransactionCommand = SqlCommandProvider<insertStatement, connectionString>
+type InsertTransactionCommand = SqlCommandProvider<insertStatement, "name=EveWarehouse">
 
 [<EntryPoint>]
 let main argv = 
     let terahertzBom = {
+        Id = None
+        Description = "Foo"
+        Duration = TimeSpan.FromHours(1.0)
         Output = { ItemId = ItemId 33360 ; Quantity = 300L * 168L * 2L }
         Input = 
         [
@@ -28,6 +31,10 @@ let main argv =
             { ItemId = ItemId 4312 ; Quantity = 5040L * 2L } 
         ]
     }
+
+    match BillOfMaterialsManager.getBillOfMaterials (BillOfMaterialsId 1) with
+    | Some bom -> printfn "%A" bom
+    | None -> printfn "None"
 
     let materials = 
         terahertzBom.Input

@@ -127,6 +127,8 @@
     <Build Include="Live\Tables\Wallet.sql" />
     <Build Include="Live\Tables\Transaction.sql" />
     <Build Include="Live\Tables\InventoryEntries.sql" />
+    <Build Include="Live\Tables\BillOfMaterials.sql" />
+    <Build Include="Live\Tables\BillOfMaterialsInput.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />
