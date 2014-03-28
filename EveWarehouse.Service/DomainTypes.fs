@@ -4,8 +4,8 @@ module DomainTypes =
 
     open System
     
-    type ItemId = ItemId of int64
-    type StationId = StationId of int64
+    type ItemId = ItemId of int
+    type StationId = StationId of int
     type WalletId = WalletId of int64
     type TransactionId = TransactionId of int64
 

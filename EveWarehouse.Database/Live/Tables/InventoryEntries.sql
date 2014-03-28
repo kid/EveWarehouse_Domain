@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [Live].[InventoryEntries]
 (
     [Id] BIGINT NOT NULL IDENTITY PRIMARY KEY, 
-    [ItemId] BIGINT NOT NULL, 
+    [ItemId] INT NOT NULL, 
     [Price] DECIMAL(27, 2) NOT NULL, 
     [Movement] BIGINT NOT NULL,
     [Date] DATETIME2 NOT NULL, 

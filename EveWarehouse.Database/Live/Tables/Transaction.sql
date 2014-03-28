@@ -9,8 +9,6 @@
     [Quantity] BIGINT NOT NULL, 
     [ClientId] BIGINT NOT NULL, 
     [ClientName] NVARCHAR(MAX) NOT NULL, 
-    [ClientTypeId] INT NOT NULL, 
-    [ClientTypeName] NVARCHAR(MAX) NOT NULL,
     [StationId] INT NOT NULL,
     [StationName] NVARCHAR(MAX) NOT NULL,
     [TransactionFor] INT NOT NULL, 

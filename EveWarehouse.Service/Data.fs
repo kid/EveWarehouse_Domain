@@ -9,7 +9,7 @@ let connectionString = "Server=(local);Initial Catalog=EveWarehouse.Database;Int
 
 type internal EveWarehouse = SqlDataConnection<ConnectionString=connectionString, ForceUpdate=true>
 
-module InventoryRepository =
+module InventoryManager =
     
     type AvailableStockForItemQuery = SqlCommandProvider<"../EveWarehouse.Database/Queries/FifoInventory.sql", connectionString>
 
@@ -25,3 +25,4 @@ module InventoryRepository =
         AvailableStockForItemQuery().Execute(id)
         |> Seq.toList
         |> takeNeeded quantity
+

@@ -1,32 +1,40 @@
-﻿open EveWarehouse.DomainTypes
+﻿open FSharp.Data
+open FSharp.Data.CsvExtensions
+open EveWarehouse.DomainTypes
 open Data
 open System
 open Account
 open Transactions
 open MarketHistory
 
+[<Literal>]
+let insertStatement = """
+INSERT INTO [Live].[Transaction] ([WalletId], [TransactionId], [Date], [ItemId], [ItemName], [Price], [Quantity], [ClientId], [ClientName], [StationId], [StationName], [TransactionFor], [TransactionType])
+VALUES (@WalletId, @TransactionId, @Date, @ItemId, @ItemName, @Price, @Quantity, @ClientId, @ClientName, @StationId, @StationName, @TransactionFor, @TransactionType)
+"""
+    
+
+type InsertTransactionCommand = SqlCommandProvider<insertStatement, connectionString>
+
 [<EntryPoint>]
 let main argv = 
-    InventoryRepository.tryPeek (ItemId 16652L) 20000L
-    |> Seq.iter (printfn "%A")
-    
     let terahertzBom = {
-        Output = { ItemId = ItemId 33360L ; Quantity = 300L * 168L * 2L }
+        Output = { ItemId = ItemId 33360 ; Quantity = 300L * 168L * 2L }
         Input = 
         [
-            { ItemId = ItemId 16657L ; Quantity = 16800L * 2L } ; 
-            { ItemId = ItemId 16652L ; Quantity = 8400L * 2L } ; 
-            { ItemId = ItemId 16646L ; Quantity = 8400L * 2L } ; 
-            { ItemId = ItemId 4312L ; Quantity = 5040L * 2L } 
+            { ItemId = ItemId 16657 ; Quantity = 16800L * 2L } ; 
+            { ItemId = ItemId 16652 ; Quantity = 8400L * 2L } ; 
+            { ItemId = ItemId 16646 ; Quantity = 8400L * 2L } ; 
+            { ItemId = ItemId 4312 ; Quantity = 5040L * 2L } 
         ]
     }
 
     let materials = 
         terahertzBom.Input
-        |> Seq.collect (fun x -> InventoryRepository.tryPeek x.ItemId x.Quantity)
+        |> Seq.collect (fun x -> InventoryManager.tryPeek x.ItemId x.Quantity)
         |> Seq.sumBy (fun x -> x.Price * decimal x.Quantity)
 
-    let transport = decimal (17640000 + 12600000)
+    let transport = decimal (2 * (17640000 + 12600000))
 
     let total = materials + transport
 
@@ -46,6 +54,35 @@ let main argv =
 //    updateAllPrices
 //    updateTransactions
 
+//    let command = InsertTransactionCommand()
+//    for row in CsvFile.Load("..\..\..\Transactions.csv").Rows do
+//        let transactionType = 
+//            match row?TransactionType with
+//            | "BUY" -> 1
+//            | "SELL" -> 0
+//
+//        let transactionFor = 
+//            match row?TransactionFor with
+//            | "PERSONAL" -> 1
+//            | "CORPORATION" -> 2
+//
+//        command.Execute(
+//            row?WalletId.AsInteger64(),
+//            row?TransactionId.AsInteger64(),
+//            row?Date.AsDateTime(),
+//            row?TypeId.AsInteger(),
+//            row?TypeName,
+//            row?Price.AsDecimal(),
+//            row?Quantity.AsInteger64(),
+//            row?ClientId.AsInteger64(),
+//            row?ClientName,
+//            row?StationId.AsInteger(),
+//            row?StationName,
+//            transactionFor,
+//            transactionType
+//        )
+//        |> ignore
+    
     printfn "Done"
     Console.ReadLine() |> ignore
     0

@@ -46,9 +46,12 @@ FirstOut as (
 )
 select 
 	f.[ItemId],
-	s.[Id] as [StockId],
-	case when s.Id = f.[Id] then isnull(f.[Remaining], cast(0 as bigint)) else s.[Movement] end as [Remaining],
-	s.[Price]
+	s.[SourceStationId],
+	s.[Price],
+	case 
+	when s.Id = f.[Id] then isnull(f.[Remaining], cast(0 as bigint)) 
+	else s.[Movement] 
+	end as [Remaining]
 from [FirstOut] f
 join [Live].[InventoryEntries] s on s.[ItemId] = f.[ItemId] and s.[Date] >= f.[Date] and s.[Movement] > 0
 where s.ItemId = @ItemId
