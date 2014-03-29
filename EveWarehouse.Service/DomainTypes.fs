@@ -9,11 +9,17 @@ module DomainTypes =
     type WalletId = WalletId of int64
     type TransactionId = TransactionId of int64
 
+    type Item = {
+        Id: ItemId
+        Name: string
+        Volume: decimal
+    }
+
     type TransactionType =
         | Sell = 0
         | Buy = 1
 
-    type TransactionFor =
+    type DoneFor =
         | Unknown = 0
         | Personal = 1
         | Corporation = 2
@@ -25,13 +31,12 @@ module DomainTypes =
         StationId: StationId
         Quantity: int64
         Price: decimal
-        DoneFor: TransactionFor
+        DoneFor: DoneFor
         Type: TransactionType
     }
 
     type InventoryEntrySource =
         | Transaction of WalletId * TransactionId
-        //| Contract of int64
         | ManualEntry
 
     type InventoryEntry = {
@@ -48,10 +53,11 @@ module DomainTypes =
         Quantity: int64
     }
 
-    type ItemQuantityPrice = {
+    type ItemQuantityPriceStation = {
         ItemId: ItemId
         Quantity: int64
         Price: decimal
+        StationId: StationId
     }
 
     type BillOfMaterialsId = BillOfMaterialsId of int
@@ -65,6 +71,6 @@ module DomainTypes =
     }
 
     type ReactionBatch = {
-        ItemId: ItemId
+        BillOfMaterials: BillOfMaterialsId
         CycleDuration: TimeSpan
     }

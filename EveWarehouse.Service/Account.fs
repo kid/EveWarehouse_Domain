@@ -6,8 +6,8 @@ open Microsoft.FSharp.Linq.NullableOperators
 open EveAI.Live
 open EveAI.Live.Account
 open EveAI.Live.Corporation
-open Common
-open Data
+open EveWarehouse.Common
+open EveWarehouse.Data
 
 exception InputError of string
 
@@ -38,21 +38,21 @@ let saveApiKey id code (details: APIKeyInfo) =
     
     context.DataContext.SubmitChanges()
 
-let upsert (table: Linq.Table<'A>) seq mapId insert update = 
-    let ids = seq |> Seq.map fst |> Seq.toArray
-    let entityMap =
-        table
-        |> Seq.filter (fun x -> Seq.exists ((=) (mapId x)) ids)
-        |> Seq.map (fun x -> (mapId x, x))
-        |> Map.ofSeq
-
-    let updateOrInsert x =
-        let id = fst x
-        match entityMap.TryFind id with
-        | Some ent -> update x ent
-        | None -> insert x |> table.InsertOnSubmit
-
-    seq |> Seq.iter updateOrInsert
+//let upsert (table: Linq.Table<'A>) seq mapId insert update = 
+//    let ids = seq |> Seq.map fst |> Seq.toArray
+//    let entityMap =
+//        table
+//        |> Seq.filter (fun x -> Seq.exists ((=) (mapId x)) ids)
+//        |> Seq.map (fun x -> (mapId x, x))
+//        |> Map.ofSeq
+//
+//    let updateOrInsert x =
+//        let id = fst x
+//        match entityMap.TryFind id with
+//        | Some ent -> update x ent
+//        | None -> insert x |> table.InsertOnSubmit
+//
+//    seq |> Seq.iter updateOrInsert
 
 let updateCharactersAndCorporations keyId code (details: APIKeyInfo) =
     use context = EveWarehouse.GetDataContext()

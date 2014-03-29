@@ -7,7 +7,7 @@ open Microsoft.FSharp.Linq.NullableOperators
 open EveAI
 open EveAI.Live
 open EveAI.Live.Account
-open Data
+open EveWarehouse.Data
 
 let saveTransactions walletId accountKey transactions =
     let toEntity (entry:TransactionEntry) =

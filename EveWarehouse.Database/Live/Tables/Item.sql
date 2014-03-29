@@ -2,5 +2,5 @@
 (
     [Id] INT NOT NULL PRIMARY KEY, 
     [Name] NVARCHAR(MAX) NOT NULL, 
-    [Volume] DECIMAL(18, 4) NOT NULL
+    [Volume] DECIMAL(18, 2) NOT NULL
 )

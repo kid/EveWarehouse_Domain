@@ -1,54 +1,27 @@
 ﻿open FSharp.Data
 open FSharp.Data.CsvExtensions
+open EveWarehouse.Common
 open EveWarehouse.DomainTypes
-open Data
+open EveWarehouse.Data
 open System
 open Account
 open Transactions
 open MarketHistory
 
 [<Literal>]
-let insertStatement = """
+let insertStatement = 
+    """
 INSERT INTO [Live].[Transaction] ([WalletId], [TransactionId], [Date], [ItemId], [ItemName], [Price], [Quantity], [ClientId], [ClientName], [StationId], [StationName], [TransactionFor], [TransactionType])
 VALUES (@WalletId, @TransactionId, @Date, @ItemId, @ItemName, @Price, @Quantity, @ClientId, @ClientName, @StationId, @StationName, @TransactionFor, @TransactionType)
 """
-    
 
 type InsertTransactionCommand = SqlCommandProvider<insertStatement, "name=EveWarehouse">
 
 [<EntryPoint>]
 let main argv = 
-    let terahertzBom = {
-        Id = None
-        Description = "Foo"
-        Duration = TimeSpan.FromHours(1.0)
-        Output = { ItemId = ItemId 33360 ; Quantity = 300L * 168L * 2L }
-        Input = 
-        [
-            { ItemId = ItemId 16657 ; Quantity = 16800L * 2L } ; 
-            { ItemId = ItemId 16652 ; Quantity = 8400L * 2L } ; 
-            { ItemId = ItemId 16646 ; Quantity = 8400L * 2L } ; 
-            { ItemId = ItemId 4312 ; Quantity = 5040L * 2L } 
-        ]
-    }
-
-    match BillOfMaterialsManager.getBillOfMaterials (BillOfMaterialsId 1) with
-    | Some bom -> printfn "%A" bom
-    | None -> printfn "None"
-
-    let materials = 
-        terahertzBom.Input
-        |> Seq.collect (fun x -> InventoryManager.tryPeek x.ItemId x.Quantity)
-        |> Seq.sumBy (fun x -> x.Price * decimal x.Quantity)
-
-    let transport = decimal (2 * (17640000 + 12600000))
-
-    let total = materials + transport
-
-    printfn "Materials:  %A" materials
-    printfn "Transport:  %A" transport
-    printfn "Total:      %A" total
-    printfn "Unit Price: %A" (total / decimal terahertzBom.Output.Quantity)
+    BatchManager.getQuote (BillOfMaterialsId 1) (168L * 2L)
+    |> printfn "%A"
+//    printfn "Unit Price: %A" (total / decimal terahertzBom.Output.Quantity)
 
 
 //    addApiKey 3080241L "w2pF9LaPbdNpvLAcJx17tMzwwLoskKDpv2PmHR0VXPGicqVzrMncyASYSCMzrb8J"

@@ -5,8 +5,8 @@ open System.Linq
 open FSharp.Data
 open FSharp.Data.JsonExtensions
 
-open Common
-open Data
+open EveWarehouse.Common
+open EveWarehouse.Data
 
 [<Literal>]
 let marketHistorySample = """ 

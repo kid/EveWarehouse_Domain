@@ -111,6 +111,8 @@
     <Folder Include="Star" />
     <Folder Include="Star\Tables" />
     <Folder Include="Queries" />
+    <Folder Include="Live\Table Types" />
+    <Folder Include="Live\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Live\Tables\ApiKey.sql">
@@ -129,6 +131,8 @@
     <Build Include="Live\Tables\InventoryEntries.sql" />
     <Build Include="Live\Tables\BillOfMaterials.sql" />
     <Build Include="Live\Tables\BillOfMaterialsInput.sql" />
+    <Build Include="Live\Table Types\Item.sql" />
+    <Build Include="Live\Stored Procedures\FindItemByIds.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />
