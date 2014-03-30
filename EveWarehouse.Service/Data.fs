@@ -99,29 +99,11 @@ module BatchManager =
     /// <param name="cycles">The number of cycles to run.</param>
     let getQuote id cycles = 
         
-        let getBom id = 
-            match BillOfMaterialsManager.getBillOfMaterials id with
-            | Some bom -> succeed bom
-            | None -> fail ["Bill of material not found"]
-
         let peekFromStocks bom =
-            let rec collect acc seq =
-                match acc, seq with
-                | _, [] -> acc
-                | Success s1, (Success s2) :: xs ->
-                    collect (Success (List.append s1 s2)) xs
-                | Success s1, (Failure f2) :: xs ->
-                    collect (Failure [f2]) xs
-                | Failure f1, (Failure f2) :: xs ->
-                    collect (Failure (f2 :: f1)) xs
-                | Failure f1, (Success s2) :: xs ->
-                    collect (Failure f1) xs
-
             bom.Input
             |> Seq.map (fun x -> InventoryManager.tryPeek x.ItemId (x.Quantity * cycles))
-            |> Seq.toList
-            |> collect (Success [])
-        
+            |> Seq.fold (append (fun a b -> List.append a b) (fun a b -> List.append a [b])) (Success [])
+            
         let materialsCost input = 
             input |> Seq.sumBy (fun x -> x.Price * decimal x.Quantity)
 
@@ -137,7 +119,8 @@ module BatchManager =
         let materiaslAndTransport =
             plus (+) (List.append) (switch materialsCost) (switch transportCost)
             
-        getBom id
+        BillOfMaterialsManager.getBillOfMaterials id
+        |> someOrFail ["Bill of material not found"]
         >>= peekFromStocks
         >>= materiaslAndTransport
         

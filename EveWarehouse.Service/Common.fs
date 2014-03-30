@@ -54,4 +54,14 @@ module Common =
         | Failure f1, Success _ -> Failure f1
         | Success _, Failure f2 -> Failure f2
         | Failure f1, Failure f2 -> Failure(addFailure f1 f2)
+
+    let append addSuccess addFailure state elem =
+        match state, elem with
+        | Success s1, Success s2 -> Success (addSuccess s1 s2)
+        | Success s1, Failure f2 -> Failure [f2]
+        | Failure f1, Success s2 -> Failure f1
+        | Failure f1, Failure f2 -> Failure (addFailure f1 f2)
     
+    let someOrFail failValue = function
+        | Some value -> Success value
+        | None -> Failure failValue
