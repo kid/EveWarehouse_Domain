@@ -1,4 +1,4 @@
-﻿CREATE TYPE [Live].[Item] AS TABLE
+﻿CREATE TYPE [dbo].[LiveItem] AS TABLE
 (
 	[Id] INT NULL,
 	[Name] NVARCHAR (MAX),

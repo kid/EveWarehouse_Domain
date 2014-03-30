@@ -45,9 +45,13 @@ FirstOut as (
 	) as p
 )
 select 
+	s.[Id],
 	f.[ItemId],
-	s.[SourceStationId],
+	s.[StationId],
 	s.[Price],
+	s.[Date],
+	s.[WalletId],
+	s.[TransactionId],
 	case 
 	when s.Id = f.[Id] then isnull(f.[Remaining], cast(0 as bigint)) 
 	else s.[Movement] 

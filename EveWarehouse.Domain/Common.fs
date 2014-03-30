@@ -1,5 +1,6 @@
 ﻿namespace EveWarehouse
 
+[<AutoOpen>]
 module Common =
 
     // the two-track type

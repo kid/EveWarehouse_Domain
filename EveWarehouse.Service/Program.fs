@@ -19,20 +19,19 @@ type InsertTransactionCommand = SqlCommandProvider<insertStatement, "name=EveWar
 
 [<EntryPoint>]
 let main argv = 
-    BatchManager.getQuote (BillOfMaterialsId 1) (168L * 2L)
+    BatchManager.getQuote (BillOfMaterialsId 1) (168L * 2L) (StationId 60003760)
     |> printfn "%A"
-//    printfn "Unit Price: %A" (total / decimal terahertzBom.Output.Quantity)
 
 
 //    addApiKey 3080241L "w2pF9LaPbdNpvLAcJx17tMzwwLoskKDpv2PmHR0VXPGicqVzrMncyASYSCMzrb8J"
 //    addApiKey 3092040L "Zi0ySl6v2xjJfNJaj62piYA1RWCaUzE1NWgK0xPcCJG1hnQ3V8pobD9MnJkTzYhI"
 //    addApiKey 3180276L "8zoa5OldjSDeONty2if8wSaCepH4XXg73U0wdw8WcwzKzXvp6J6nOU5mqA1oJz1D"
 //    
-//    updateCharactersWallet
-//    updateCorporationsWallets
-//    
-//    updateAllPrices
-//    updateTransactions
+    updateCharactersWallet
+    updateCorporationsWallets
+    
+    updateAllPrices
+    updateTransactions
 
 //    let command = InsertTransactionCommand()
 //    for row in CsvFile.Load("..\..\..\Transactions.csv").Rows do

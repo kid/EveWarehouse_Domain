@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>EveWarehouse.Service</RootNamespace>
     <AssemblyName>EveWarehouse.Service</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>EveWarehouse.Service</Name>
@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="Common.fs" />
     <Compile Include="DomainTypes.fs" />
     <Compile Include="Data.fs" />
     <Compile Include="Account.fs" />
@@ -97,6 +96,13 @@
     <None Include="packages.config" />
     <None Include="SqlServerTypes\readme.htm" />
     <None Include="SqlServerTypes\Loader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EveWarehouse.Domain\EveWarehouse.Domain.fsproj">
+      <Name>EveWarehouse.Domain</Name>
+      <Project>{3ad939d9-e0a9-47c8-8851-e106f54f9a80}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

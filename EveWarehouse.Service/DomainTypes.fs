@@ -4,7 +4,9 @@ module DomainTypes =
 
     open System
     
+    type BatchId = BatchId of int
     type ItemId = ItemId of int
+    type SolarSystemId = SolarSystemId of int
     type StationId = StationId of int
     type WalletId = WalletId of int64
     type TransactionId = TransactionId of int64
@@ -37,7 +39,11 @@ module DomainTypes =
 
     type InventoryEntrySource =
         | Transaction of WalletId * TransactionId
+        | Batch of BatchId
         | ManualEntry
+
+    type InventoryEntryDestination = 
+        | Batch of BatchId
 
     type InventoryEntry = {
         Date: DateTime
@@ -45,7 +51,8 @@ module DomainTypes =
         StationId: StationId
         Price: decimal
         Quantity: int64
-        Source: InventoryEntrySource
+        Source: InventoryEntrySource option
+        Destination: InventoryEntryDestination option
     }
 
     type ItemQuantity = {
@@ -70,7 +77,11 @@ module DomainTypes =
         Input: ItemQuantity list
     }
 
-    type ReactionBatch = {
+    type Batch = 
+    | ReactionBatch of ReactionBatch
+    
+    and ReactionBatch = {
+        Id: BatchId option
         BillOfMaterials: BillOfMaterialsId
-        CycleDuration: TimeSpan
+        PosSystem: SolarSystemId
     }

@@ -42,4 +42,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CorporationId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="231c7d24-0445-4724-81d7-fb36260bd8fa" ChangeDateTime="03/30/2014 15:33:43">
+    <Property Name="ElementName" Value="[Live].[Batch].[SystemId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[Live].[Batch]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SolarSystemId" />
+  </Operation>
 </Operations>
