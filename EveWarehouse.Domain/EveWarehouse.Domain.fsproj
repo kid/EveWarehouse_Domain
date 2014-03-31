@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Common.fs" />
     <Compile Include="Types.fs" />
+    <Compile Include="Repositories.fs" />
     <Compile Include="Services.fs" />
     <None Include="SqlServerTypes\readme.htm" />
     <None Include="SqlServerTypes\Loader.cs" />

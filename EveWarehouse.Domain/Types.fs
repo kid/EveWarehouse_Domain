@@ -4,13 +4,30 @@ open System
 
 [<AutoOpen>]
 module Types =
-
-    type ItemId = ItemId of int
-    type StationId = StationId of int
+    
     type BatchId = BatchId of int
     type WalletId = WalletId of int64
     type TransactionId = TransactionId of int64
     
+    
+    type LocationId =
+    | Station of StationId
+    | SolarSystem of SolarSystemId
+
+    and StationId = StationId of int
+
+    and SolarSystemId = SolarSystemId of int
+
+
+    type Item = {
+        Id : ItemId
+        Name : string
+        Volume : decimal
+    }
+
+    and ItemId = ItemId of int
+
+
     type InventoryLine =
     | InventoryInput of InventoryInput
     | InventoryOutput of InventoryOutput
@@ -28,7 +45,7 @@ module Types =
     and InventoryOutput = {
         Id : InventoryLineId option
         Date : DateTime
-        ItemId : ItemId
+        ItemId : ItemId 
         Quantity : int64
         Price : decimal
         Destination : InventoryDestination
@@ -44,3 +61,13 @@ module Types =
     and InventoryDestination =
     | Batch of BatchId
     
+
+    type BillOfMaterials = {
+        Id : BillOfMaterialsId option
+        Description : string
+        Duration: TimeSpan
+        Output : Item * int64
+        Input : (Item * int64) list
+    }
+
+    and BillOfMaterialsId = BillOfMaterialsId of int
