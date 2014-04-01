@@ -55,3 +55,50 @@ module BillOfMaterialsRepository =
         |> Async.RunSynchronously
         |> Seq.toList
         |> map
+
+module InventoryLineRepository = 
+
+    [<Literal>]
+    let private insertStatement = """
+    INSERT INTO [Live].[InventoryEntries] ([ItemId], [Date], [Price], [Movement], [BatchId], [WalletId], [TransactionId], [StationId])
+    VALUES (@ItemId, @Date, @Price, @Movement, @BatchId, @WalletId, @TransactionId, @StationId)
+    SELECT SCOPE_IDENTITY()"""
+
+    type private InsertCommand = SqlCommandProvider<insertStatement, "name=EveWarehouse", AllParametersOptional = true, SingleRow = true>
+
+    /// <summary>
+    /// Save an inventory line, returning a new line item with the id filled.
+    /// </summary>
+    /// <param name="line">The inventory line to save.</param>
+    let save line =
+        let getItemId = function
+            | ItemId id -> Some id
+
+        let getStationId = function
+            | LocationId.StationId (StationId id) -> Some id
+            | LocationId.SolarSystemId _ -> None
+        
+        let itemId, stationId, date, price, quantity =
+            match line with
+            | InventoryInput input -> getItemId input.ItemId, getStationId input.LocationId, input.Date, input.Price, input.Quantity
+            | InventoryOutput output -> getItemId output.ItemId, getStationId output.LocationId, output.Date, output.Price, output.Quantity * -1L
+            
+        let batchId, walletId, transactionId = 
+            match line with
+            | InventoryInput input ->
+                match input.Source with
+                | InventorySource.Batch (BatchId id) -> Some id, None, None
+                | InventorySource.Transaction (WalletId w, TransactionId t) -> None, Some w, Some t
+                | InventorySource.UserEntry -> None, None, None
+            | InventoryOutput output ->
+                match output.Destination with
+                | InventoryDestination.Batch (BatchId id) -> Some id, None, None
+        
+        let id = 
+            InsertCommand().AsyncExecute(itemId, Some date, Some price, Some quantity, batchId, walletId, transactionId, stationId)
+            |> Async.RunSynchronously
+            |> Option.get |> Option.get |> int64 |> InventoryLineId
+            
+        match line with
+        | InventoryInput input -> InventoryInput { input with Id = Some id }
+        | InventoryOutput output -> InventoryOutput { output with Id = Some id }

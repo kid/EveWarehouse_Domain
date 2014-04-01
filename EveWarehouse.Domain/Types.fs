@@ -11,8 +11,8 @@ module Types =
     
     
     type LocationId =
-    | Station of StationId
-    | SolarSystem of SolarSystemId
+    | StationId of StationId
+    | SolarSystemId of SolarSystemId
 
     and StationId = StationId of int
 
@@ -38,7 +38,7 @@ module Types =
         ItemId : ItemId
         Quantity : int64
         Price : decimal
-        StationId : StationId
+        LocationId : LocationId
         Source : InventorySource
     }
 
@@ -48,6 +48,7 @@ module Types =
         ItemId : ItemId 
         Quantity : int64
         Price : decimal
+        LocationId : LocationId
         Destination : InventoryDestination
     }
     

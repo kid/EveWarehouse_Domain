@@ -25,8 +25,7 @@ module InventoryService =
     type private AvailableStockForItemQuery = SqlCommandProvider<"../EveWarehouse.Database/Queries/FifoInventory.sql", "name=EveWarehouse">
 
     let private saveOutput (line: InventoryOutput) = 
-        // TODO
-        { line with Id = Some(InventoryLineId 1L) }
+        InventoryLineRepository.save (InventoryOutput line)
 
     /// <summary>
     /// Return the asked number of items from the stock, in the order they were added.
@@ -38,9 +37,9 @@ module InventoryService =
             match l with
             | [] -> []
             | x :: xs when x.Remaining >= needed ->
-                [{ Id = Some (InventoryLineId x.Id) ; ItemId = ItemId x.ItemId ; Date = x.Date ; Quantity = needed ; Price = x.Price ; StationId = StationId x.StationId ; Source = UserEntry }]
+                [{ Id = Some (InventoryLineId x.Id) ; ItemId = ItemId x.ItemId ; Date = x.Date ; Quantity = needed ; Price = x.Price ; LocationId = LocationId.StationId (StationId x.StationId) ; Source = UserEntry }]
             | x :: xs ->
-                { Id = Some (InventoryLineId x.Id) ; ItemId = ItemId x.ItemId ; Date = x.Date ; Quantity = x.Remaining ; Price = x.Price ; StationId = StationId x.StationId; Source = UserEntry }
+                { Id = Some (InventoryLineId x.Id) ; ItemId = ItemId x.ItemId ; Date = x.Date ; Quantity = x.Remaining ; Price = x.Price ; LocationId = LocationId.StationId (StationId x.StationId); Source = UserEntry }
                 :: takeNeeded (needed - x.Remaining) xs
 
         AvailableStockForItemQuery().AsyncExecute(id)
@@ -59,7 +58,7 @@ module InventoryService =
         match peek id quantity with
         | Success input ->
             input
-            |> Seq.map (fun x -> { Id = None ; ItemId = x.ItemId ; Date = x.Date ; Quantity = x.Quantity ; Price = x.Price ; Destination = destination })
+            |> Seq.map (fun x -> { Id = None ; ItemId = x.ItemId ; Date = x.Date ; Quantity = x.Quantity ; Price = x.Price ; Destination = destination ; LocationId = x.LocationId })
             |> Seq.map saveOutput
             |> succeed
         | Failure f -> Failure f
@@ -89,7 +88,7 @@ module BatchService =
         let materialsTransportCost (inputLines: (Item * int64 * InventoryInput list) seq) =
             inputLines
             |> Seq.map (fun (item, quantity, lines) -> 
-                lines |> Seq.sumBy (fun l -> ShippingService.quote (Station l.StationId) locationId (decimal l.Quantity * item.Volume)))
+                lines |> Seq.sumBy (fun l -> ShippingService.quote l.LocationId locationId (decimal l.Quantity * item.Volume)))
             |> Seq.sum
 
         let materiaslAndTransport =
