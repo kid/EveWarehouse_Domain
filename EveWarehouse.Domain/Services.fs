@@ -76,9 +76,11 @@ module BatchService =
     /// <summary>
     /// Calculates the batch cost given the materials already in stock
     /// </summary>
-    /// <param name="id">The BillOfMateraisl Id.</param>
+    /// <param name="bomId">The BillOfMateraisl Id.</param>
     /// <param name="cycles">The number of cycles to run.</param>
-    let quote id cycles locationId destinationId = 
+    /// <param name="posLocation">The location where the reaction is run.</param>
+    /// <param name="shipTo">The destination of the ouput.</param>
+    let quote bomId cycles posLocation shipTo = 
         
         let materialsCost (inputLines: (Item * int64 * InventoryInput list) seq) = 
             inputLines
@@ -88,7 +90,7 @@ module BatchService =
         let materialsTransportCost (inputLines: (Item * int64 * InventoryInput list) seq) =
             inputLines
             |> Seq.map (fun (item, quantity, lines) -> 
-                lines |> Seq.sumBy (fun l -> ShippingService.quote l.LocationId locationId (decimal l.Quantity * item.Volume)))
+                lines |> Seq.sumBy (fun l -> ShippingService.quote l.LocationId posLocation (decimal l.Quantity * item.Volume)))
             |> Seq.sum
 
         let materiaslAndTransport =
@@ -100,9 +102,25 @@ module BatchService =
 
         let outputCost bom =
             let item, quantity = bom.Output
-            ShippingService.quote locationId destinationId (decimal quantity * item.Volume)
+            ShippingService.quote posLocation shipTo (decimal quantity * item.Volume)
         
-        BillOfMaterialsRepository.getBillOfMaterials id
+        BillOfMaterialsRepository.getBillOfMaterials bomId
         |> someOrFail ["Bill of materials not found"]
         |> plus (+) (List.append) (bind inputCost) (map outputCost)
     
+
+    let submit bomId cycles posLocation shipTo startDate = 
+        
+        let createBatch _ =
+            ReactionBatch { 
+                Id = None ; 
+                BillOfMaterialsId = bomId ; 
+                Cycles = cycles ; 
+                StartDate = startDate 
+            }
+            |> BatchRepository.save
+
+        BillOfMaterialsRepository.getBillOfMaterials bomId
+        |> someOrFail ["Bill of materials not found"]
+        |> map (function bom -> bom, createBatch bom)
+        

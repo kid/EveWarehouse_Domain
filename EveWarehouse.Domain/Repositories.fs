@@ -5,10 +5,41 @@ open FSharp.Data
 
 open EveWarehouse.Domain
 
+module BatchRepository =
+
+    [<Literal>]
+    let private insertStatement = 
+        """
+        INSERT INTO [Live].[Batch] ([BillOfMaterialsId], [Cycles], [StartDate])
+        VALUES (@BillOfMaterialsId, @Cycles, @StartDate)
+        SELECT SCOPE_IDENTITY()
+        """
+
+    type private InsertCommand = SqlCommandProvider<insertStatement, "name=EveWarehouse", AllParametersOptional = true, SingleRow = true>
+
+    let save batch =
+        match batch with
+        | ReactionBatch b ->
+            let getBomId = function
+                | { BillOfMaterialsId = (BillOfMaterialsId id) } -> Some id
+
+            let id = 
+                InsertCommand().AsyncExecute(
+                    getBomId b,
+                    Some b.Cycles,
+                    Some b.StartDate
+                )
+                |> Async.RunSynchronously
+                |> Option.get |> Option.get |> int |> BatchId
+
+            ReactionBatch { b with Id = Some id }
+
+
 module BillOfMaterialsRepository =
     
     [<Literal>]
-    let private getBillOfMaterialsStatement = """
+    let private getBillOfMaterialsStatement = 
+        """
         SELECT 
         	b.[Id], 
         	b.[Description], 
@@ -25,7 +56,8 @@ module BillOfMaterialsRepository =
         INNER JOIN [Live].[BillOfMaterialsInput] ON [Id] = [BillOfMaterialsId]
         INNER JOIN [Live].[Item] i ON i.[Id] = [InputItemId]
         INNER JOIN [Live].[Item] o ON o.[Id] = [OutputItemId]
-        WHERE b.[Id] = @Id"""
+        WHERE b.[Id] = @Id
+        """
 
     type private GetBillOfMaterialsQuery = SqlCommandProvider<getBillOfMaterialsStatement, "name=EveWarehouse">
 
@@ -59,10 +91,12 @@ module BillOfMaterialsRepository =
 module InventoryLineRepository = 
 
     [<Literal>]
-    let private insertStatement = """
-    INSERT INTO [Live].[InventoryEntries] ([ItemId], [Date], [Price], [Movement], [BatchId], [WalletId], [TransactionId], [StationId])
-    VALUES (@ItemId, @Date, @Price, @Movement, @BatchId, @WalletId, @TransactionId, @StationId)
-    SELECT SCOPE_IDENTITY()"""
+    let private insertStatement = 
+        """
+        INSERT INTO [Live].[InventoryEntries] ([ItemId], [Date], [Price], [Movement], [BatchId], [WalletId], [TransactionId], [StationId])
+        VALUES (@ItemId, @Date, @Price, @Movement, @BatchId, @WalletId, @TransactionId, @StationId)
+        SELECT SCOPE_IDENTITY()
+        """
 
     type private InsertCommand = SqlCommandProvider<insertStatement, "name=EveWarehouse", AllParametersOptional = true, SingleRow = true>
 

@@ -72,3 +72,14 @@ module Types =
     }
 
     and BillOfMaterialsId = BillOfMaterialsId of int
+
+
+    type Batch =
+    | ReactionBatch of ReactionBatch
+
+    and ReactionBatch = {
+        Id : BatchId option
+        Cycles : int64
+        StartDate : DateTime
+        BillOfMaterialsId : BillOfMaterialsId
+    }
