@@ -1,9 +1,17 @@
-﻿namespace EveWarehouse.Domain.Repositories
+﻿module EveWarehouse.Domain.Repositories
 
 open System
+open System.Transactions
 open FSharp.Data
-
 open EveWarehouse.Domain
+
+let createTransactionScope = 
+    let mutable options = new TransactionOptions()
+
+    options.IsolationLevel <- IsolationLevel.ReadCommitted
+    options.Timeout <- TransactionManager.MaximumTimeout
+
+    new TransactionScope(TransactionScopeOption.Required, options)
 
 module BatchRepository =
 

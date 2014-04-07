@@ -1,5 +1,6 @@
 ﻿namespace EveWarehouse.Domain.Services
 
+open System.Transactions
 open FSharp.Data
 
 open EveWarehouse
@@ -54,11 +55,11 @@ module InventoryService =
     /// <param name="id">The item id.</param>
     /// <param name="quantity">The asked quantity.</param>
     /// <param name="destination">The stock destination.</param>
-    let take id quantity (destination : InventoryDestination) =
+    let take id quantity (destination : InventoryDestination) date =
         match peek id quantity with
         | Success input ->
             input
-            |> Seq.map (fun x -> { Id = None ; ItemId = x.ItemId ; Date = x.Date ; Quantity = x.Quantity ; Price = x.Price ; Destination = destination ; LocationId = x.LocationId })
+            |> Seq.map (fun x -> { Id = None ; ItemId = x.ItemId ; Date = date ; Quantity = x.Quantity ; Price = x.Price ; Destination = destination ; LocationId = x.LocationId })
             |> Seq.map saveOutput
             |> succeed
         | Failure f -> Failure f
@@ -111,16 +112,27 @@ module BatchService =
 
     let submit bomId cycles posLocation shipTo startDate = 
         
+        use t = createTransactionScope
+
         let createBatch _ =
             ReactionBatch { 
-                Id = None ; 
-                BillOfMaterialsId = bomId ; 
-                Cycles = cycles ; 
+                Id = None
+                BillOfMaterialsId = bomId
+                Cycles = cycles
                 StartDate = startDate 
             }
             |> BatchRepository.save
 
+        let store (bom, batch) =
+            bom.Input
+            |> Seq.map (fun (item, quantity) -> 
+                match InventoryService.take item.Id (quantity * cycles) posLocation startDate with
+                | Success lines -> Success (item, quantity * cycles, lines)
+                | Failure m -> Failure m)
+            |> Seq.fold (append (fun a b -> List.append a [b]) (fun a b -> List.append a [b])) (Success [])
+            
         BillOfMaterialsRepository.getBillOfMaterials bomId
         |> someOrFail ["Bill of materials not found"]
         |> map (function bom -> bom, createBatch bom)
+        |> bind store
         

@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>EveWarehouse.Service</RootNamespace>
     <AssemblyName>EveWarehouse.Service</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.3.1.0</TargetFSharpCoreVersion>
     <Name>EveWarehouse.Service</Name>
@@ -45,7 +45,7 @@
     <Reference Include="EveAI.Live">
       <HintPath>..\libs\EveAI\EveAI.Live.dll</HintPath>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="FSharp.Core, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="FSharp.Data">
       <HintPath>..\packages\FSharp.Data.2.0.1\lib\net40\FSharp.Data.dll</HintPath>
       <Private>True</Private>

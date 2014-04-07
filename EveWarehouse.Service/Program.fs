@@ -1,8 +1,10 @@
 ﻿open FSharp.Data
 open FSharp.Data.CsvExtensions
 open EveWarehouse.Common
-open EveWarehouse.DomainTypes
-open EveWarehouse.Data
+open EveWarehouse.Domain
+open EveWarehouse.Domain.Services
+//open EveWarehouse.DomainTypes
+//open EveWarehouse.Data
 open System
 open Account
 open Transactions
@@ -19,7 +21,7 @@ type InsertTransactionCommand = SqlCommandProvider<insertStatement, "name=EveWar
 
 [<EntryPoint>]
 let main argv = 
-    BatchManager.getQuote (BillOfMaterialsId 1) (168L * 2L) (StationId 60003760)
+    BatchService.quote (BillOfMaterialsId 1) (168L * 2L) (LocationId.SolarSystemId (SolarSystemId 1)) (LocationId.StationId (StationId 60003760))
     |> printfn "%A"
 
 
@@ -27,8 +29,8 @@ let main argv =
 //    addApiKey 3092040L "Zi0ySl6v2xjJfNJaj62piYA1RWCaUzE1NWgK0xPcCJG1hnQ3V8pobD9MnJkTzYhI"
 //    addApiKey 3180276L "8zoa5OldjSDeONty2if8wSaCepH4XXg73U0wdw8WcwzKzXvp6J6nOU5mqA1oJz1D"
 //    
-    updateCharactersWallet
-    updateCorporationsWallets
+    //updateCharactersWallet
+    //updateCorporationsWallets
     
     updateAllPrices
     updateTransactions
