@@ -32,22 +32,41 @@ module Types =
     | InventoryInput of InventoryInput
     | InventoryOutput of InventoryOutput
     
+        member this.Quantity =
+            match this with
+            | InventoryInput input -> input.Quantity
+            | InventoryOutput output -> output.Quantity
+
+        member this.TotalPrice =
+            match this with
+            | InventoryInput input -> decimal input.Quantity * input.Price + input.ShippingCost
+            | InventoryOutput output -> decimal output.Quantity * output.Price
+
+        member this.LocationId =
+            match this with
+            | InventoryInput input -> input.LocationId
+            | InventoryOutput output -> output.LocationId
+
     and InventoryInput = {
         Id : InventoryLineId option
+        SourceLineId : InventoryLineId option
         Date : DateTime
         ItemId : ItemId
         Quantity : int64
         Price : decimal
+        ShippingCost : decimal
         LocationId : LocationId
         Source : InventorySource
     }
 
     and InventoryOutput = {
         Id : InventoryLineId option
+        SourceLineId : InventoryLineId option
         Date : DateTime
         ItemId : ItemId 
         Quantity : int64
         Price : decimal
+        ShippingCost : decimal
         LocationId : LocationId
         Destination : InventoryDestination
     }
@@ -61,7 +80,6 @@ module Types =
     
     and InventoryDestination =
     | Batch of BatchId
-    
 
     type BillOfMaterials = {
         Id : BillOfMaterialsId option
@@ -76,6 +94,10 @@ module Types =
 
     type Batch =
     | ReactionBatch of ReactionBatch
+
+        member this.Id =
+            match this with
+            | ReactionBatch b -> b.Id
 
     and ReactionBatch = {
         Id : BatchId option

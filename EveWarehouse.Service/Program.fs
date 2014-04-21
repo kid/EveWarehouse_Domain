@@ -21,7 +21,7 @@ type InsertTransactionCommand = SqlCommandProvider<insertStatement, "name=EveWar
 
 [<EntryPoint>]
 let main argv = 
-    BatchService.quote (BillOfMaterialsId 1) (168L * 2L) (LocationId.SolarSystemId (SolarSystemId 1)) (LocationId.StationId (StationId 60003760))
+    BatchService.submit (BillOfMaterialsId 1) (168L) (LocationId.StationId (StationId 1)) (DateTime.Now.AddDays(-7.0)) (LocationId.StationId (StationId 60003760))
     |> printfn "%A"
 
 
@@ -32,8 +32,8 @@ let main argv =
     //updateCharactersWallet
     //updateCorporationsWallets
     
-    updateAllPrices
-    updateTransactions
+    //updateAllPrices
+    //updateTransactions
 
 //    let command = InsertTransactionCommand()
 //    for row in CsvFile.Load("..\..\..\Transactions.csv").Rows do

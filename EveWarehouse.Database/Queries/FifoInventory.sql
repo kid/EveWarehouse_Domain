@@ -1,4 +1,4 @@
-﻿-- declare @ItemId bigint = 16652;
+﻿-- declare @ItemId bigint = 4312;
 
 with 
 StockSum as (
@@ -49,9 +49,12 @@ select
 	f.[ItemId],
 	s.[StationId],
 	s.[Price],
+	s.[ShippingCost],
+	s.[SourceLineId],
 	s.[Date],
 	s.[WalletId],
 	s.[TransactionId],
+	s.[BatchId],
 	case 
 	when s.Id = f.[Id] then isnull(f.[Remaining], cast(0 as bigint)) 
 	else s.[Movement] 

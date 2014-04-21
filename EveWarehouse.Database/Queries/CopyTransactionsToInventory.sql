@@ -1,8 +1,9 @@
-﻿insert into [Live].[InventoryEntries] ([ItemId], [Date], [Price], [WalletId], [TransactionId], [SourceStationId], [Movement])
+﻿insert into [Live].[InventoryEntries] ([ItemId], [Date], [Price], [ShippingCost], [WalletId], [TransactionId], [StationId], [Movement])
 select 
 	[ItemId], 
 	[Date], 
 	[Price],
+	0 as [ShippingCost],
 	[WalletId], 
 	[TransactionId], 
 	[StationId],

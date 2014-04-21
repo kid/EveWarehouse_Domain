@@ -134,6 +134,7 @@
     <Build Include="Live\Table Types\Item.sql" />
     <Build Include="Live\Stored Procedures\FindItemsByIds.sql" />
     <Build Include="Live\Tables\Batch.sql" />
+    <Build Include="Live\Stored Procedures\MoveInventoryLine.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />

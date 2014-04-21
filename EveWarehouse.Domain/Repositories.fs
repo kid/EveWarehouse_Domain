@@ -3,7 +3,11 @@
 open System
 open System.Transactions
 open FSharp.Data
+open EveWarehouse.Common
 open EveWarehouse.Domain
+
+type EveWarehouse = SqlProgrammabilityProvider<"name=EveWarehouse">
+let EveWarehouseDb = EveWarehouse()
 
 let createTransactionScope = 
     let mutable options = new TransactionOptions()
@@ -12,6 +16,17 @@ let createTransactionScope =
     options.Timeout <- TransactionManager.MaximumTimeout
 
     new TransactionScope(TransactionScopeOption.Required, options)
+
+module ItemRepository =
+    
+    [<Literal>]
+    let private getStatement = "SELECT * FROM [Live].[Item] WHERE [Id] = @Id"
+
+    type private GetCommand = SqlCommandProvider<getStatement, "name=EveWarehouse", SingleRow = true>
+
+    let get (ItemId id) =
+        let item = GetCommand().AsyncExecute(id) |> Async.RunSynchronously |> Option.get
+        { Item.Id = (ItemId item.Id) ; Name = item.Name ; Volume = item.Volume }
 
 module BatchRepository =
 
@@ -101,8 +116,8 @@ module InventoryLineRepository =
     [<Literal>]
     let private insertStatement = 
         """
-        INSERT INTO [Live].[InventoryEntries] ([ItemId], [Date], [Price], [Movement], [BatchId], [WalletId], [TransactionId], [StationId])
-        VALUES (@ItemId, @Date, @Price, @Movement, @BatchId, @WalletId, @TransactionId, @StationId)
+        INSERT INTO [Live].[InventoryEntries] ([ItemId], [Date], [Price], [ShippingCost], [Movement], [SourceLineId], [BatchId], [WalletId], [TransactionId], [StationId])
+        VALUES (@ItemId, @Date, @Price, @ShippingCost, @Movement, @SourceLineId, @BatchId, @WalletId, @TransactionId, @StationId)
         SELECT SCOPE_IDENTITY()
         """
 
@@ -116,14 +131,18 @@ module InventoryLineRepository =
         let getItemId = function
             | ItemId id -> Some id
 
+        let getSourceLineId = function
+            | Some (InventoryLineId id) -> Some id
+            | None -> None
+
         let getStationId = function
             | LocationId.StationId (StationId id) -> Some id
             | LocationId.SolarSystemId _ -> None
         
-        let itemId, stationId, date, price, quantity =
+        let itemId, stationId, date, quantity, price, shippingCost, sourceLineId =
             match line with
-            | InventoryInput input -> getItemId input.ItemId, getStationId input.LocationId, input.Date, input.Price, input.Quantity
-            | InventoryOutput output -> getItemId output.ItemId, getStationId output.LocationId, output.Date, output.Price, output.Quantity * -1L
+            | InventoryInput input -> getItemId input.ItemId, getStationId input.LocationId, input.Date, input.Quantity, input.Price, input.ShippingCost, getSourceLineId input.SourceLineId
+            | InventoryOutput output -> getItemId output.ItemId, getStationId output.LocationId, output.Date, output.Quantity * -1L, output.Price, output.ShippingCost, getSourceLineId output.SourceLineId
             
         let batchId, walletId, transactionId = 
             match line with
@@ -137,10 +156,37 @@ module InventoryLineRepository =
                 | InventoryDestination.Batch (BatchId id) -> Some id, None, None
         
         let id = 
-            InsertCommand().AsyncExecute(itemId, Some date, Some price, Some quantity, batchId, walletId, transactionId, stationId)
+            InsertCommand().AsyncExecute(itemId, Some date, Some price, Some shippingCost, Some quantity, sourceLineId, batchId, walletId, transactionId, stationId)
             |> Async.RunSynchronously
             |> Option.get |> Option.get |> int64 |> InventoryLineId
             
         match line with
         | InventoryInput input -> InventoryInput { input with Id = Some id }
         | InventoryOutput output -> InventoryOutput { output with Id = Some id }
+
+    let move (line: InventoryInput) date (destination: LocationId) shippingCost =
+        match line.Id, destination with
+        | Some (InventoryLineId id), LocationId.StationId (StationId stationId) -> 
+            EveWarehouseDb.``Stored Procedures``.``Live.MoveInventoryLine``.AsyncExecute(
+                lineId = id, 
+                quantity = line.Quantity,
+                date = date, 
+                destinationId = stationId, 
+                shippingCost = shippingCost)
+            |> Async.RunSynchronously
+            |> Seq.toList
+            |> (function
+                | [x] -> 
+                    let source =
+                        match x.WalletId, x.TransactionId, x.BatchId with
+                        | Some w, Some t, None -> InventorySource.Transaction ((WalletId w), (TransactionId t))
+                        | None, None, Some b -> InventorySource.Batch (BatchId b)
+                        | _, _, _ -> InventorySource.UserEntry
+
+                    Success { Id = Some (InventoryLineId x.Id); SourceLineId = Some (InventoryLineId x.SourceLineId.Value) ; ItemId = ItemId x.ItemId ; Date = x.Date ; Quantity = x.Movement ; Price = x.Price ; ShippingCost = x.ShippingCost ; LocationId = LocationId.StationId (StationId x.StationId) ; Source = source }
+                | x :: xs -> Failure "StoredProc returned more than one row"
+                | [] -> Failure "StoredProc returned 0 rows"
+            )
+        | Some _, LocationId.SolarSystemId _ -> Failure "Can't move line to a solar system"
+        | None, _ -> Failure "Can't move unsaved line"
+        
