@@ -137,6 +137,7 @@
     <Build Include="Live\Tables\Batch.sql" />
     <Build Include="Live\Stored Procedures\MoveInventoryLine.sql" />
     <Build Include="Live\Views\AvailableStock.sql" />
+    <Build Include="Star\Tables\Dim_Date.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />
