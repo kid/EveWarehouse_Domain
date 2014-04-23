@@ -114,6 +114,7 @@
     <Folder Include="Live\Table Types" />
     <Folder Include="Live\Stored Procedures" />
     <Folder Include="Live\Views" />
+    <Folder Include="Star\Scripts" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Live\Tables\ApiKey.sql">
@@ -143,6 +144,7 @@
     <None Include="EveWarehouse.Database.publish.xml" />
     <None Include="Queries\FifoInventory.sql" />
     <None Include="Queries\CopyTransactionsToInventory.sql" />
+    <None Include="Star\Scripts\Generate_Dim_Date.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="EveWarehouse.Database.refactorlog" />
