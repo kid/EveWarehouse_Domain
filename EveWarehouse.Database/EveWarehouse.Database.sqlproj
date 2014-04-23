@@ -113,6 +113,7 @@
     <Folder Include="Queries" />
     <Folder Include="Live\Table Types" />
     <Folder Include="Live\Stored Procedures" />
+    <Folder Include="Live\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Live\Tables\ApiKey.sql">
@@ -135,6 +136,7 @@
     <Build Include="Live\Stored Procedures\FindItemsByIds.sql" />
     <Build Include="Live\Tables\Batch.sql" />
     <Build Include="Live\Stored Procedures\MoveInventoryLine.sql" />
+    <Build Include="Live\Views\AvailableStock.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EveWarehouse.Database.publish.xml" />

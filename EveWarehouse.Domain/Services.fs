@@ -190,7 +190,6 @@ module BatchService =
                     let outputItem, outputQuantity = bom.Output
                     let endDate = startDate + TimeSpan.FromTicks(bom.Duration.Ticks * cycles)
                     let unitPrice = totalPrice / (decimal (outputQuantity * cycles))
-
                     {
                         InventoryInput.Id = None
                         ItemId = outputItem.Id

@@ -2,7 +2,7 @@
 	@lineId bigint,
 	@quantity bigint,
 	@destinationId int,
-	@date date,
+	@date datetime2,
 	@shippingCost decimal (27, 2)
 AS
 BEGIN
@@ -10,14 +10,14 @@ BEGIN
 	RETURN
 
 	INSERT INTO [Live].[InventoryEntries] ([ItemId], [Price], [ShippingCost], [Date], [BatchId], [WalletId], [TransactionId], [StationId], [Movement], [SourceLineId])
-	SELECT [ItemId], [Price], [ShippingCost], @date as [Date], [BatchId], [WalletId], [TransactionId], [StationId], @quantity * - 1 as [Movement], [Id] as [SourceLineId]
+	SELECT [ItemId], [Price], [ShippingCost], DATEADD(millisecond, 1, @date) as [Date], [BatchId], [WalletId], [TransactionId], [StationId], @quantity * - 1 as [Movement], [Id] as [SourceLineId]
 	FROM [Live].[InventoryEntries]
 	WHERE [Id] = @lineId;
 
 	DECLARE @outputLineId bigint = SCOPE_IDENTITY();
 
 	INSERT INTO [Live].[InventoryEntries] ([ItemId], [Price], [ShippingCost], [Date], [BatchId], [WalletId], [TransactionId], [StationId], [Movement], [SourceLineId])
-	SELECT [ItemId], [Price], [ShippingCost] + @shippingCost as [ShippingCost], @date as [Date], [BatchId], [WalletId], [TransactionId], @destinationId as [StationId], @quantity as [Movement], [Id] as [SourceLineId]
+	SELECT [ItemId], [Price], [ShippingCost] + @shippingCost as [ShippingCost], DATEADD(millisecond, 1, @date) as [Date], [BatchId], [WalletId], [TransactionId], @destinationId as [StationId], @quantity as [Movement], [Id] as [SourceLineId]
 	FROM [Live].[InventoryEntries]
 	WHERE [Id] = @outputLineId;
 
